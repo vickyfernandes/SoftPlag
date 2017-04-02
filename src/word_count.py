@@ -13,7 +13,8 @@ import re
 frequency1 = {}
 file_input1 = open('circle.py', 'r')
 f1 = file_input1.read().lower()
-match_pattern1 = re.findall(r'\b[a-z]{3,15}\b', f1)
+#match_pattern1 = re.findall(r'\b[a-z]{3,15}\b', f1)
+match_pattern1 = re.findall(r'[a-z]{1,1000}', f1)
  
 for word1 in match_pattern1:
     count1 = frequency1.get(word1,0)
@@ -30,7 +31,8 @@ print("----------END OF DISPLAY OF 1ST PYTHON FILE. 2ND PYTHON FILE DISPLAY BEGI
 frequency2 = {}
 file_input2 = open('rect.py', 'r')
 f2 = file_input2.read().lower()
-match_pattern2 = re.findall(r'\b[a-z]{3,15}\b', f2)
+#match_pattern2 = re.findall(r'\b[a-z]{3,15}\b', f2)
+match_pattern2 = re.findall(r'[a-z]{3,15}', f2)
  
 for word2 in match_pattern2:
     count2 = frequency2.get(word2,0)
