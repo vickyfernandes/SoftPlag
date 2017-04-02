@@ -32,7 +32,7 @@ frequency2 = {}
 file_input2 = open('rect.py', 'r')
 f2 = file_input2.read().lower()
 #match_pattern2 = re.findall(r'\b[a-z]{3,15}\b', f2)
-match_pattern2 = re.findall(r'[a-z]{3,15}', f2)
+match_pattern2 = re.findall(r'[a-z]{1,1000}', f2)
  
 for word2 in match_pattern2:
     count2 = frequency2.get(word2,0)
