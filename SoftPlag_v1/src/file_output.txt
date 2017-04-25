@@ -1,0 +1,1 @@
+ java.util.scanner  public  area       public static void main string   args                 int         double pi    .    area          scanner  new scanner system.           system.out.  enter radius of circle              s.nextint            area   pi            system.out.println  area of circle   area
