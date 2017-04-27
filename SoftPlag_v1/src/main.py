@@ -6,23 +6,21 @@ Created on 25-Apr-2017
 '''
 
 from SoftPlag import *
+import os
 
 if __name__ == '__main__':
-    with open('circle.java', 'r') as file_input:
-            f1 = file_input.read() 
-    
+    inputdir = "/home/mindcraft/Desktop/vicky/python/SoftPlag_v1/src/input/"
+    outputdir = "/home/mindcraft/Desktop/vicky/python/SoftPlag_v1/src/output/"
     scpp=Pyscp()
-    scpp.pscp(f1)
-    
     scpj=Javascp()
-    scpj.jscp(f1)
-    
-    def fileout(self,final_string):
-        print(final_string)
-        with open('file_output.txt', 'w') as file_output:
-            f1 = file_output.write(final_string) #print output to file
-
-    
-
+    filelist = os.listdir(inputdir)
+    for i in filelist:
+        if i.endswith(".py") or i.endswith(".java"):  # You could also add "and i.startswith('f')
+            with open(inputdir + i, 'r') as f:
+                fin = f.read()
+                #if i.endswith(".py"):
+                scpp.pscp(fin)
+                #else:
+                scpj.jscp(fin)
     
     
