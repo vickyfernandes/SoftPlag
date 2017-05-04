@@ -14,14 +14,20 @@ filelist = os.listdir(inputdir)
 
 if __name__ == '__main__':   
     for i in filelist:
-        if i.endswith(".py") or i.endswith(".java"):  # You could also add "and i.startswith('f')
-            with open(inputdir + i, 'r') as f:
-                fin = f.read()
-                if i.endswith(".py"):
-                    scpp=Pyscp()    
-                    scpp.pscp(fin)
-                    f.close()
-                else:
-                    scpj=Javascp()
-                    scpj.jscp(fin)
-                    f.close()
+        with open(os.path.join(inputdir + i), 'r') as f:
+            fin = f.read()
+            if i.endswith(".py"):               
+                scp=Pyscp()    
+                final_string = scp.pscpp(fin)
+                scp.word_counter(final_string)
+                with open(os.path.join(outputdir + i +".out"), 'w') as file_output:
+                    file_output = open(os.path.join(outputdir + i +".out"), 'w')
+                    file_output.write(final_string)
+            
+            if i.endswith(".java"):
+                scp=Javascp()
+                final_string=scp.jscpp(fin)
+                scp.word_counter(final_string)
+                with open(os.path.join(outputdir + i +".out"), 'w') as file_output:
+                    file_output = open(os.path.join(outputdir + i +".out"), 'w')
+                    file_output.write(fin)
