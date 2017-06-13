@@ -11,54 +11,92 @@ import re
 import keyword
 import os
 from collections import Counter
+import threading
 
 inputdir = "C:\input/"
 outputdir = "C:\output/"
 
-filelist = os.listdir(inputdir)
+#filelist = os.listdir(inputdir)
 
-class Preprocessor:
+class Preprocessor(threading.Thread):
+    def __init__(self, target_file_path):
+        threading.Thread.__init__(self) # Initialising Thread
+        self.path = target_file_path # File path
+        self.fname = None; # File name
+        self.counter = None;
+        return
+
+    def run(self): # Main execution function
+        file_object = None # File object
+
+        try:
+            file_object = open(self.path, "r")
+        except FileNotFoundError:
+            print("[ERROR] File "+self.path+" not found")
+            file_object = None
+            return
+        except IsADirectoryError:
+            print("Skipping ", self.path, ": it is a directory")
+            return
+
+        data = file_object.read()
+        self.fname = file_object.name
+        output = self.scpp(data)
+        # print(self.fname, ": ", output)
+        self.counter = self.word_counter(output)
+        return
+
     def scpp(self, fin):
-        for i in filelist:
-            # remove special characters from string and convert to lower-case
-            char_string = re.sub('[^a-zA-Z._]', ' ', fin).lower()
+        '''
+        - Handles individual text blobs from files (i.e. per file)
+        - Assuming fin is output of file.read()
+        - i -> self.fname
+        '''
 
-            # remove single occurrences of characters
-            final_string = re.sub(r'(?:^| )\w(?:$| )', '', char_string).strip()
+        # remove special characters from string and convert to lower-case
+        char_string = re.sub('[^a-zA-Z._]', ' ', fin).lower()
 
-            if i.endswith(".py"):
-                reservedwords={}  # empty list to store the reserved keywords
-                reservedwords = keyword.kwlist  # reserved keywords assigned to reservedWords list
+        # remove single occurrences of characters
+        final_string = re.sub(r'(?:^| )\w(?:$| )', '', char_string).strip()
 
-            if i.endswith(".java"):
-                reservedwords = {'abstract', 'continue', 'for', 'new', 'switch', 'assert',
-                                 'default', 'goto', 'package', 'synchronized', 'boolean', 'do',
-                                 'if', 'private', 'this', 'break', 'double', 'implements', 'protected',
-                                 'throw', 'byte', 'else', 'import', 'public', 'throws', 'case', 'enum',
-                                 'instanceof', 'return', 'transient', 'catch', 'extends', 'int', 'short',
-                                 'try', 'char', 'final', 'interface', 'static', 'void', 'class', 'finally',
-                                 'long', 'strictfp', 'volatile', 'const', 'float',
-                                 'native', 'super', 'while'}  # list to store the reserved keywords
+        if self.fname.endswith(".py"):
+            reservedwords=[]  # empty list to store the reserved keywords
+            reservedwords = keyword.kwlist  # reserved keywords assigned to reservedWords list
 
-            for word in reservedwords:            # checking if reserved keyword exists in string or not
-                if word in final_string:
-                    # substitute reserved keywords with no spaces
-                    final_string = re.sub(r' \b' + word + r'\b', '', final_string)
+        if self.fname.endswith(".java"):
+            reservedwords = ['abstract', 'continue', 'for', 'new', 'switch', 'assert',
+                                'default', 'goto', 'package', 'synchronized', 'boolean', 'do',
+                                'if', 'private', 'this', 'break', 'double', 'implements', 'protected',
+                                'throw', 'byte', 'else', 'import', 'public', 'throws', 'case', 'enum',
+                                'instanceof', 'return', 'transient', 'catch', 'extends', 'int', 'short',
+                                'try', 'char', 'final', 'interface', 'static', 'void', 'class', 'finally',
+                                'long', 'strictfp', 'volatile', 'const', 'float',
+                                'native', 'super', 'while']  # list to store the reserved keywords
 
-                else:
-                    continue
+        for word in reservedwords:            # checking if reserved keyword exists in string or not
+            if word in final_string:
+                # substitute reserved keywords with no spaces
+                final_string = re.sub(r' \b' + word + r'\b', '', final_string)
+
+            else:
+                continue
 
         return final_string
 
     def word_counter(self, final_string):
-        for i in filelist:
-
-            words = final_string.split()
-            counter = Counter(words)
-            key = counter.keys()
-            value = counter.values()
+        words = final_string.split()
+        counter = Counter(words)
+        return(counter)
+        '''
+        # Uncomment to see output
+        key = counter.keys()
+        value = counter.values()
         print(key)
         print(value)
+        '''
+    
+    def get_word_count(self):
+        return(self.counter);
 
 '''
 #This is another logic for a word frequency counter. But I would mostly prefer using collections for simplicity purposes
